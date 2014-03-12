@@ -27,6 +27,8 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    CGFloat h = self.tabBarController.tabBar.frame.size.height;
+    self.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-115-h*2);
 }
 
 - (void)didReceiveMemoryWarning

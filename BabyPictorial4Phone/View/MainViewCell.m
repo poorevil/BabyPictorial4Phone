@@ -64,22 +64,23 @@
      * 图集其他图片
      */
     [self.otherPhotosView removeFromSuperview];
-    self.otherPhotosView = [[MainViewCellAlbunmOtherPhotosView alloc] initWithFrame:CGRectMake(0, cellFrame.size.height+4,
-                                                                                               self.bounds.size.width,
-                                                                                               64)];// 320/5
+    self.otherPhotosView = [[[MainViewCellAlbunmOtherPhotosView alloc]
+                            initWithFrame:CGRectMake(0, cellFrame.size.height,
+                                                     self.bounds.size.width,80)] autorelease];// 320/5
     self.otherPhotosView.photoArray = self.albunmModel.photoArray;
     [self addSubview:self.otherPhotosView];
     if (self.albunmModel.photoArray.count == 0) {
         self.otherPhotosView.hidden = YES;
     }else{
-        cellFrame.size.height = self.otherPhotosView.frame.size.height + self.otherPhotosView.frame.origin.y;
+        cellFrame.size.height = self.otherPhotosView.frame.size.height
+                                + self.otherPhotosView.frame.origin.y;
     }
     
     /*
      * 评论
      */
     [self.commentsView removeFromSuperview];
-    self.commentsView = [[MainViewCellAlbunmPhotoCommentsView alloc] initWithFrame:CGRectMake(0, cellFrame.size.height+4, self.bounds.size.width, 100)];
+    self.commentsView = [[[MainViewCellAlbunmPhotoCommentsView alloc] initWithFrame:CGRectMake(0, cellFrame.size.height+4, self.bounds.size.width, 100)] autorelease];
     self.commentsView.commentArray = self.albunmModel.commentArray;
     [self addSubview:self.commentsView];
     if (self.albunmModel.commentArray.count == 0) {
@@ -100,7 +101,6 @@
         
         [self initViews];
     }
-    
     
 }
 
@@ -146,6 +146,9 @@
     //cell frame
     CGRect cellFrame = self.frame;
     cellFrame.size.height -= diffY;
+    self.frame = cellFrame;
+    
+    NSLog(@"------needNotifyDatasetUpdate--------");
     
     [self.delegate needNotifyDatasetUpdate];
 }

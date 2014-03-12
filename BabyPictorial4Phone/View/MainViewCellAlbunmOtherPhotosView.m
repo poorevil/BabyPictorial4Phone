@@ -7,6 +7,16 @@
 //
 
 #import "MainViewCellAlbunmOtherPhotosView.h"
+#import "PicDetailModel.h"
+#import "EGOImageView.h"
+
+
+#define kMaxCellNumber          4
+@interface MainViewCellAlbunmOtherPhotosView()
+
+@property (nonatomic,retain) NSMutableArray *photoImageViewArray;
+
+@end
 
 @implementation MainViewCellAlbunmOtherPhotosView
 
@@ -15,7 +25,9 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
-        self.backgroundColor = [UIColor redColor];
+//        self.backgroundColor = [UIColor redColor];
+        
+        self.photoImageViewArray = [NSMutableArray array];
     }
     return self;
 }
@@ -29,9 +41,58 @@
 }
 */
 
+-(void)initViews
+{
+    //舍弃第一张图片
+    NSInteger photoMaxIndex = self.photoArray.count > (kMaxCellNumber+1) ? kMaxCellNumber+1 : self.photoArray.count;
+    //遍历1-4
+    for (int i=1 ; i<photoMaxIndex ; i++) {
+        PicDetailModel *picDetailModel = [self.photoArray objectAtIndex:i];
+        
+        CGRect cellRect = CGRectMake(0, 0,
+                                     self.bounds.size.width/kMaxCellNumber,
+                                     self.bounds.size.width/kMaxCellNumber);
+        if (i == 1) {
+            cellRect = CGRectMake(0, 0,
+                                  self.bounds.size.width/kMaxCellNumber * (kMaxCellNumber+1-(photoMaxIndex-1)),
+                                  self.bounds.size.width/kMaxCellNumber);
+        }else{
+            cellRect.origin.x = [[self.photoImageViewArray objectAtIndex:(i-2)] frame].origin.x+[[self.photoImageViewArray objectAtIndex:(i-2)] frame].size.width;
+        }
+        
+        EGOImageView *imageView = [[[EGOImageView alloc] initWithFrame:cellRect] autorelease];
+        imageView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+        imageView.layer.borderWidth = 0.5f;
+        imageView.clipsToBounds = YES;
+        [imageView setContentMode:UIViewContentModeScaleAspectFill];
+        imageView.imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@_%dx%d.jpg",
+                                                   picDetailModel.picUrl,
+                                                   (NSInteger)cellRect.size.width * 2,
+                                                   (NSInteger)cellRect.size.width * 2]];
+        //TODO:点击事件
+        
+        [self.photoImageViewArray addObject:imageView];
+        [self addSubview:imageView];
+        
+    }
+}
+
+-(void)setPhotoArray:(NSMutableArray *)photoArray
+{
+    if (self.photoArray != photoArray) {
+        [_photoArray release];
+        _photoArray = nil;
+        _photoArray = [photoArray retain];
+        
+        [self initViews];
+    }
+}
+
 -(void)dealloc
 {
     self.photoArray = nil;
+    self.photoImageViewArray = nil;
+    
     [super dealloc];
 }
 

@@ -58,6 +58,7 @@
                                                                     0,
                                                                     self.view.bounds.size.width, self.view.bounds.size.height)];
     self.mtableview.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.mtableview.allowsSelection = NO;
     self.mtableview.delegate = self;
     self.mtableview.dataSource = self;
     
@@ -67,10 +68,8 @@
 //    lastDirection = 0;
 
     // Set the barTintColor. This will determine the overlay that fades in and out upon scrolling.
-	[self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:60.0/255.0
-                                                                             green:1
-                                                                              blue:150.0/255.0
-                                                                             alpha:1]];
+	[self.navigationController.navigationBar setBarTintColor:[UIColor whiteColor]];
+    //[UIColor colorWithRed:60.0/255.0 green:1 blue:150.0/255.0 alpha:1]
 	[self.navigationController.navigationBar setTintColor:[UIColor blackColor]];
 	
 	// Just call this line to enable the scrolling navbar
@@ -138,6 +137,7 @@
     
     if (cell == nil) {
         cell = [[[MainViewCell alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.width)] autorelease];
+        cell.delegate = self;
     }
     
     cell.albunmModel = [self.albunmArray objectAtIndex:indexPath.section];
@@ -148,23 +148,28 @@
 #pragma mark - UITableViewDelegate<NSObject, UIScrollViewDelegate>
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-//    NSLog(@"%d   %d",indexPath.section,indexPath.row);
+    NSLog(@"%d   %d",indexPath.section,indexPath.row);
     
     MainViewCell *cell = (MainViewCell *)[self tableView:tableView cellForRowAtIndexPath:indexPath];
     return [cell cellSize].height;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 30;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     AlbunmModel *albunm = [self.albunmArray objectAtIndex:section];
     
-    
     UIView *sectionView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width,30)] autorelease];
+    sectionView.backgroundColor = [UIColor whiteColor];
     UILabel *titleLabel = [[[UILabel alloc] initWithFrame:CGRectMake(10,
                                                                      5,
                                                                      self.view.bounds.size.width - 100,
                                                                      20)] autorelease];
-    titleLabel.textColor = [UIColor grayColor];
+    titleLabel.textColor = [UIColor blueColor];
     titleLabel.text = albunm.albunm_name;
     titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
     [sectionView addSubview:titleLabel];
@@ -174,13 +179,19 @@
     [sectionView addSubview:clockImageView];
     
     UILabel *timeLabel = [[[UILabel alloc] initWithFrame:CGRectMake(clockImageView.frame.size.width+clockImageView.frame.origin.x+5,
-                                                                     5,
-                                                                     self.view.bounds.size.width - 50,
+                                                                     6,
+                                                                     75,
                                                                      20)] autorelease];
     timeLabel.textColor = [UIColor grayColor];
+    timeLabel.textAlignment = NSTextAlignmentRight;
     timeLabel.text = [albunm.last_add_time getDynamicDateStringFromNow];//计算时间
-    timeLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
+    timeLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:9.0f];
     [sectionView addSubview:timeLabel];
+    
+    UIView *lineView = [[[UIView alloc] initWithFrame:CGRectMake(0, sectionView.frame.size.height-0.5f,
+                                                                sectionView.frame.size.width,0.5f)] autorelease];
+    lineView.backgroundColor = [UIColor lightGrayColor];
+    [sectionView addSubview:lineView];
     
     return sectionView;
 }

@@ -56,8 +56,8 @@
         dateString = [NSString stringWithFormat:@"%d分钟前",(NSInteger)distanceFromNow / 60];
         
     }else if (distanceFromNow < 24 * 60 * 60) {//小于一天
-        dateString = [NSString stringWithFormat:@"%d小时%d分钟前",(NSInteger)distanceFromNow / 60 /60,(NSInteger)distanceFromNow / 60 % 60];
-        
+//        dateString = [NSString stringWithFormat:@"%d小时%d分钟前",(NSInteger)distanceFromNow / 60 /60,(NSInteger)distanceFromNow / 60 % 60];
+        dateString = [NSString stringWithFormat:@"%d小时前",(NSInteger)distanceFromNow / 60 /60];
     }else if (distanceFromNow < 7 * 24 * 60 * 60) {//小于一周
         dateString = [NSString stringWithFormat:@"%@ %02d:%02d",weekDay,[comps hour],[comps minute]];
         
