@@ -14,3 +14,8 @@
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
 #endif
+
+//app id
+#define kAppId                  @"4"
+//接口域名
+#define kBaseInterfaceDomain    @"http://vps.taoxiaoxian.com"

@@ -71,6 +71,7 @@
 		C145748F18CEC23D0024F7D6 /* CommentModel.m in Sources */ = {isa = PBXBuildFile; fileRef = C145748E18CEC23D0024F7D6 /* CommentModel.m */; };
 		C145749218CEEDBA0024F7D6 /* NSDate+DynamicDateString.m in Sources */ = {isa = PBXBuildFile; fileRef = C145749118CEEDBA0024F7D6 /* NSDate+DynamicDateString.m */; };
 		C145749618CF00CE0024F7D6 /* MainInterfaceJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = C145749518CF00CE0024F7D6 /* MainInterfaceJSONSerializer.m */; };
+		C14CA96D18D04B6C0032175B /* AMScrollingNavbarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C14CA96C18D04B6C0032175B /* AMScrollingNavbarViewController.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -185,6 +186,8 @@
 		C145749118CEEDBA0024F7D6 /* NSDate+DynamicDateString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+DynamicDateString.m"; sourceTree = "<group>"; };
 		C145749418CF00CE0024F7D6 /* MainInterfaceJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainInterfaceJSONSerializer.h; sourceTree = "<group>"; };
 		C145749518CF00CE0024F7D6 /* MainInterfaceJSONSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainInterfaceJSONSerializer.m; sourceTree = "<group>"; };
+		C14CA96B18D04B6C0032175B /* AMScrollingNavbarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMScrollingNavbarViewController.h; sourceTree = "<group>"; };
+		C14CA96C18D04B6C0032175B /* AMScrollingNavbarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMScrollingNavbarViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -406,6 +409,7 @@
 		C10909F318C9AE1800674C27 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				C14CA96A18D04B6C0032175B /* AMScrollingNavbar */,
 				C10909F418C9AE3400674C27 /* MainViewController.h */,
 				C10909F518C9AE3400674C27 /* MainViewController.m */,
 				C10909F618C9AE3400674C27 /* MainViewController.xib */,
@@ -494,6 +498,15 @@
 				C145749518CF00CE0024F7D6 /* MainInterfaceJSONSerializer.m */,
 			);
 			path = Interface;
+			sourceTree = "<group>";
+		};
+		C14CA96A18D04B6C0032175B /* AMScrollingNavbar */ = {
+			isa = PBXGroup;
+			children = (
+				C14CA96B18D04B6C0032175B /* AMScrollingNavbarViewController.h */,
+				C14CA96C18D04B6C0032175B /* AMScrollingNavbarViewController.m */,
+			);
+			path = AMScrollingNavbar;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -643,6 +656,7 @@
 				C109098D18C9A6B000674C27 /* main.m in Sources */,
 				C1090A0918C9BFD700674C27 /* MeViewController.m in Sources */,
 				C145747518CD9A780024F7D6 /* CustomNavigationController.m in Sources */,
+				C14CA96D18D04B6C0032175B /* AMScrollingNavbarViewController.m in Sources */,
 				C10909F118C9AE0E00674C27 /* SVWebViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -20,5 +20,5 @@
 
 @property (nonatomic,retain) NSMutableArray *commentArray;//相册中图片的部分评论，用于首页显示
 
-
+-(id)initWithDictionary:(NSDictionary *)dict;
 @end

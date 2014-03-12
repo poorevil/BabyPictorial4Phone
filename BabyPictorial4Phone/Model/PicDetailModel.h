@@ -14,11 +14,13 @@
 @property (nonatomic,retain) NSString *picUrl;
 @property (nonatomic,retain) NSString *userId;
 @property (nonatomic,retain) NSString *descTitle;
-@property (nonatomic,retain) NSString *time;
+@property (nonatomic,retain) NSDate *time;
 @property (nonatomic,retain) NSString *taokeTitle;
 @property (nonatomic,retain) NSString *taokePrice;
 @property (nonatomic,retain) NSString *taokeNumiid;
 @property (nonatomic,retain) NSString *taokeUrl;//淘客地址
 @property (nonatomic,assign) NSInteger customTag;//是否手动添加
+
+-(id)initWithDictionary:(NSDictionary *)dict;
 
 @end

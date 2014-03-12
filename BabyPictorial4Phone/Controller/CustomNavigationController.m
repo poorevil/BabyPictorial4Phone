@@ -43,7 +43,9 @@
                      animations:^{
                          [self.navigationBar setFrame:CGRectMake(0,20, 320, 20)];
                          //TODO:修改title字体
-                     } completion:nil];
+                     } completion:^(BOOL finished) {
+                         [self.view setNeedsLayout];
+                     }];
 }
 
 -(void)changeNavigationBar2Normal
@@ -54,7 +56,9 @@
                      animations:^{
                          [self.navigationBar setFrame:CGRectMake(0,20, 320, 40)];
                          //TODO:修改title字体
-                     } completion:nil];
+                     } completion:^(BOOL finished) {
+                         [self.view setNeedsLayout];
+                     }];
 }
 
 @end
