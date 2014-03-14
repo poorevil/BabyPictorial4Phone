@@ -21,6 +21,26 @@
 
 @implementation AMScrollingNavbarViewController
 
+-(void)viewWillDisappear:(BOOL)animated
+{
+    CGRect navigationBarFrame = self.navigationController.navigationBar.frame;
+    navigationBarFrame.origin.y = 0;
+    self.navigationController.navigationBar.frame = navigationBarFrame;
+//    [self checkForPartialScroll];
+    
+    CGFloat h = self.tabBarController.tabBar.frame.size.height;
+    CGRect windowFrame = [[UIScreen mainScreen] bounds];
+    self.scrollableView.layer.frame = CGRectMake(0, 0,
+                                                 windowFrame.size.width,
+                                                 windowFrame.size.height-self.navigationController.navigationBar.frame.size.height-25-h);
+    
+    [self.overlay setAlpha:0];
+    self.isExpanded = YES;
+    self.isCollapsed = NO;
+    
+//    [super viewWillDisappear:YES ];
+}
+
 - (void)followScrollView:(UIView*)scrollableView
 {
 	self.scrollableView = scrollableView;

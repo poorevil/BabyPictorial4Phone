@@ -38,6 +38,7 @@
         // Custom initialization
         currpage = 1;
         self.albunmArray = [NSMutableArray array];
+
     }
     return self;
 }
@@ -46,14 +47,17 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    
+
     self.title = @"名牌宝贝";
     [self.navigationController.navigationBar setTranslucent:NO];
     
+    //TODO:考虑挪到父类里面
     CGFloat h = self.tabBarController.tabBar.frame.size.height;
-    self.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-115-h*2);
+    CGRect windowFrame = [[UIScreen mainScreen] bounds];
+    self.view.frame = CGRectMake(0, 0,
+                                 windowFrame.size.width,
+                                 windowFrame.size.height-self.navigationController.navigationBar.frame.size.height-25-h);
 
-    [self.mtableview setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
     self.mtableview = [[UITableView alloc] initWithFrame:CGRectMake(0,
                                                                     0,
                                                                     self.view.bounds.size.width, self.view.bounds.size.height)];
@@ -76,6 +80,7 @@
 	[self followScrollView:self.mtableview];
     
     [self getNextPage];
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -148,7 +153,7 @@
 #pragma mark - UITableViewDelegate<NSObject, UIScrollViewDelegate>
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    NSLog(@"%d   %d",indexPath.section,indexPath.row);
+//    NSLog(@"%d   %d",indexPath.section,indexPath.row);
     
     MainViewCell *cell = (MainViewCell *)[self tableView:tableView cellForRowAtIndexPath:indexPath];
     return [cell cellSize].height;

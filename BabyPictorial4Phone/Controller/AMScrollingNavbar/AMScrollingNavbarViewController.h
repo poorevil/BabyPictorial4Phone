@@ -23,4 +23,6 @@
  */
 - (void)followScrollView:(UIView*)scrollableView;
 
+- (void)checkForPartialScroll;
+
 @end

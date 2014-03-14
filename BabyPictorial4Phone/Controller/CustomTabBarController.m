@@ -56,7 +56,7 @@
                                      initWithRootViewController:self.meViewController] autorelease];
     
     self.viewControllers = @[nav1,nav2,nav3];
-    self.selectedIndex = 0;
+
     
     self.iconNameArray = @[@"sale_btn",@"search_btn",@"categoary_btn"];
     self.iconSelectedNameArray = @[@"sale_btn_focus",@"search_btn_focus",@"categoary_btn_focus"];
@@ -68,15 +68,35 @@
     [self hideRealTabBar];
     [self customTabBar];
     
+    self.selectedIndex = 0;
+
 }
 
 - (void)hideRealTabBar{
-    for(UIView *view in self.view.subviews){
-        if([view isKindOfClass:[UITabBar class]]){
-            view.hidden = YES;
-            break;
-        }
+//    for(UIView *view in self.view.subviews){
+//        if([view isKindOfClass:[UITabBar class]]){
+//            view.hidden = YES;
+//            break;
+//            for (UIView *v in [view subviews]) {
+//                v.hidden = YES;
+//            }
+//            break
+//        }
+//    }
+
+    if (self.tabBar.hidden == YES) {
+        return;
     }
+    UIView *contentView;
+    if ( [[self.view.subviews objectAtIndex:0] isKindOfClass:[UITabBar class]] )
+        contentView = [self.view.subviews objectAtIndex:1];
+    else
+        contentView = [self.view.subviews objectAtIndex:0];
+    contentView.frame = CGRectMake(contentView.bounds.origin.x,  contentView.bounds.origin.y,  contentView.bounds.size.width, contentView.bounds.size.height - self.tabBar.frame.size.height);
+    self.tabBar.hidden = YES;
+
+
+
 }
 
 - (void)customTabBar{
