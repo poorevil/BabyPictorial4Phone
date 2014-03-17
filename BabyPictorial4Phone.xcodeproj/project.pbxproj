@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		4E602A4718D0A81500F064F1 /* libMobClickLibrary_armv6.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E602A4518D0A81500F064F1 /* libMobClickLibrary_armv6.a */; };
 		4E602A4818D0A81500F064F1 /* libMobClickLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E602A4618D0A81500F064F1 /* libMobClickLibrary.a */; };
+		4E602A4C18D2FAD400F064F1 /* HotViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E602A4B18D2FAD400F064F1 /* HotViewCell.m */; };
 		C109098118C9A6B000674C27 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C109098018C9A6B000674C27 /* Foundation.framework */; };
 		C109098318C9A6B000674C27 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C109098218C9A6B000674C27 /* CoreGraphics.framework */; };
 		C109098518C9A6B000674C27 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C109098418C9A6B000674C27 /* UIKit.framework */; };
@@ -43,7 +44,6 @@
 		C10909F718C9AE3400674C27 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C10909F518C9AE3400674C27 /* MainViewController.m */; };
 		C1090A0018C9B3EA00674C27 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C10909FF18C9B3EA00674C27 /* libz.dylib */; };
 		C1090A0418C9BFC900674C27 /* HotViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C1090A0218C9BFC900674C27 /* HotViewController.m */; };
-		C1090A0518C9BFC900674C27 /* HotViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C1090A0318C9BFC900674C27 /* HotViewController.xib */; };
 		C1090A0918C9BFD700674C27 /* MeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C1090A0718C9BFD700674C27 /* MeViewController.m */; };
 		C1090A0A18C9BFD700674C27 /* MeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C1090A0818C9BFD700674C27 /* MeViewController.xib */; };
 		C1090A1018C9C04800674C27 /* CustomTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = C1090A0F18C9C04800674C27 /* CustomTabBarController.m */; };
@@ -86,6 +86,8 @@
 /* Begin PBXFileReference section */
 		4E602A4518D0A81500F064F1 /* libMobClickLibrary_armv6.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libMobClickLibrary_armv6.a; sourceTree = "<group>"; };
 		4E602A4618D0A81500F064F1 /* libMobClickLibrary.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libMobClickLibrary.a; sourceTree = "<group>"; };
+		4E602A4A18D2FAD400F064F1 /* HotViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotViewCell.h; sourceTree = "<group>"; };
+		4E602A4B18D2FAD400F064F1 /* HotViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotViewCell.m; sourceTree = "<group>"; };
 		C109097D18C9A6B000674C27 /* BabyPictorial4Phone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BabyPictorial4Phone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C109098018C9A6B000674C27 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C109098218C9A6B000674C27 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -146,7 +148,6 @@
 		C10909FF18C9B3EA00674C27 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		C1090A0118C9BFC900674C27 /* HotViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotViewController.h; sourceTree = "<group>"; };
 		C1090A0218C9BFC900674C27 /* HotViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotViewController.m; sourceTree = "<group>"; };
-		C1090A0318C9BFC900674C27 /* HotViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HotViewController.xib; sourceTree = "<group>"; };
 		C1090A0618C9BFD700674C27 /* MeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MeViewController.h; sourceTree = "<group>"; };
 		C1090A0718C9BFD700674C27 /* MeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeViewController.m; sourceTree = "<group>"; };
 		C1090A0818C9BFD700674C27 /* MeViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MeViewController.xib; sourceTree = "<group>"; };
@@ -412,7 +413,6 @@
 				C10909F518C9AE3400674C27 /* MainViewController.m */,
 				C1090A0118C9BFC900674C27 /* HotViewController.h */,
 				C1090A0218C9BFC900674C27 /* HotViewController.m */,
-				C1090A0318C9BFC900674C27 /* HotViewController.xib */,
 				C1090A0618C9BFD700674C27 /* MeViewController.h */,
 				C1090A0718C9BFD700674C27 /* MeViewController.m */,
 				C1090A0818C9BFD700674C27 /* MeViewController.xib */,
@@ -471,6 +471,8 @@
 				C145748218CDC9550024F7D6 /* MainViewCellAlbunmOtherPhotosView.m */,
 				C145748718CDC9AB0024F7D6 /* MainViewCellAlbunmPhotoCommentsView.h */,
 				C145748818CDC9AB0024F7D6 /* MainViewCellAlbunmPhotoCommentsView.m */,
+				4E602A4A18D2FAD400F064F1 /* HotViewCell.h */,
+				4E602A4B18D2FAD400F064F1 /* HotViewCell.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -584,7 +586,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C145746518C9D33E0024F7D6 /* categoary_btn@2x.png in Resources */,
-				C1090A0518C9BFC900674C27 /* HotViewController.xib in Resources */,
 				C109098B18C9A6B000674C27 /* InfoPlist.strings in Resources */,
 				C145746E18C9D33E0024F7D6 /* search_btn_focus.png in Resources */,
 				C145746918C9D33E0024F7D6 /* sale_btn@2x.png in Resources */,
@@ -647,6 +648,7 @@
 				C145749218CEEDBA0024F7D6 /* NSDate+DynamicDateString.m in Sources */,
 				C10909E918C9AE0E00674C27 /* EGOCache.m in Sources */,
 				C145747C18CDBF710024F7D6 /* MainViewCell.m in Sources */,
+				4E602A4C18D2FAD400F064F1 /* HotViewCell.m in Sources */,
 				C10909E118C9AE0E00674C27 /* AFHTTPRequestOperationManager.m in Sources */,
 				C10909E318C9AE0E00674C27 /* AFNetworkReachabilityManager.m in Sources */,
 				C109098D18C9A6B000674C27 /* main.m in Sources */,

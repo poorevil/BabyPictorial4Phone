@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface HotViewController : UIViewController
+#import "AMScrollingNavbarViewController.h"
+
+@interface HotViewController : AMScrollingNavbarViewController
 
 @end

@@ -45,6 +45,8 @@
         self.taokeUrl = [dict objectForKey:@"taoke_url"];
         self.customTag = [[dict objectForKey:@"custom_tag"] integerValue];
         
+        //TODO:commentArray
+        //TODO:ownerAlbunm
     }
     
     return self;
@@ -62,6 +64,8 @@
     self.taokePrice = nil;
     self.taokeNumiid = nil;
     self.taokeUrl = nil;
+    self.commentArray = nil;
+    self.ownerAlbunm = nil;
     
     [super dealloc];
 }

@@ -41,6 +41,20 @@
 //    [super viewWillDisappear:YES ];
 }
 
+-(void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    [self.navigationController.navigationBar setTranslucent:NO];
+    
+    //TODO:考虑挪到父类里面
+    CGFloat h = self.tabBarController.tabBar.frame.size.height;
+    CGRect windowFrame = [[UIScreen mainScreen] bounds];
+    self.view.frame = CGRectMake(0, 0,
+                                 windowFrame.size.width,
+                                 windowFrame.size.height-self.navigationController.navigationBar.frame.size.height-25-h);
+}
+
 - (void)followScrollView:(UIView*)scrollableView
 {
 	self.scrollableView = scrollableView;

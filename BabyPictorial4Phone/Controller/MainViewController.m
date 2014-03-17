@@ -14,12 +14,9 @@
 #import "MainInterfaceJSONSerializer.h"
 
 
-#define kReasonableDistance 4
+#define kSectionViewHeight      40
 
 @interface MainViewController () <UITableViewDataSource,UITableViewDelegate,MainViewCellDelegate>{
-//    CGPoint lastScrollPoint;
-//    NSInteger lastDirection;
-    
     NSInteger currpage;
     NSInteger totalCount;//图集总数
 }
@@ -35,7 +32,6 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
         currpage = 1;
         self.albunmArray = [NSMutableArray array];
 
@@ -46,17 +42,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
 
     self.title = @"名牌宝贝";
-    [self.navigationController.navigationBar setTranslucent:NO];
-    
-    //TODO:考虑挪到父类里面
-    CGFloat h = self.tabBarController.tabBar.frame.size.height;
-    CGRect windowFrame = [[UIScreen mainScreen] bounds];
-    self.view.frame = CGRectMake(0, 0,
-                                 windowFrame.size.width,
-                                 windowFrame.size.height-self.navigationController.navigationBar.frame.size.height-25-h);
+//    [self.navigationController.navigationBar setTranslucent:NO];
 
     self.mtableview = [[UITableView alloc] initWithFrame:CGRectMake(0,
                                                                     0,
@@ -67,9 +55,6 @@
     self.mtableview.dataSource = self;
     
     [self.view addSubview:self.mtableview];
-    
-//    lastScrollPoint = self.mtableview.contentOffset;
-//    lastDirection = 0;
 
     // Set the barTintColor. This will determine the overlay that fades in and out upon scrolling.
 	[self.navigationController.navigationBar setBarTintColor:[UIColor whiteColor]];
@@ -93,6 +78,7 @@
 {
 //    self.mscrollView = nil;
     self.mtableview = nil;
+    self.albunmArray = nil;
     
     [super dealloc];
 }
@@ -153,30 +139,28 @@
 #pragma mark - UITableViewDelegate<NSObject, UIScrollViewDelegate>
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-//    NSLog(@"%d   %d",indexPath.section,indexPath.row);
-    
     MainViewCell *cell = (MainViewCell *)[self tableView:tableView cellForRowAtIndexPath:indexPath];
     return [cell cellSize].height;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 30;
+    return kSectionViewHeight;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     AlbunmModel *albunm = [self.albunmArray objectAtIndex:section];
     
-    UIView *sectionView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width,30)] autorelease];
-    sectionView.backgroundColor = [UIColor whiteColor];
+    UIView *sectionView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width,kSectionViewHeight)] autorelease];
+    sectionView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.9f];
     UILabel *titleLabel = [[[UILabel alloc] initWithFrame:CGRectMake(10,
-                                                                     5,
+                                                                     9,
                                                                      self.view.bounds.size.width - 100,
                                                                      20)] autorelease];
     titleLabel.textColor = [UIColor blueColor];
     titleLabel.text = albunm.albunm_name;
-    titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
+    titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0f];
     [sectionView addSubview:titleLabel];
     
     UIImageView *clockImageView = [[[UIImageView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width - 95, 10, 5, 5)] autorelease];
@@ -184,13 +168,13 @@
     [sectionView addSubview:clockImageView];
     
     UILabel *timeLabel = [[[UILabel alloc] initWithFrame:CGRectMake(clockImageView.frame.size.width+clockImageView.frame.origin.x+5,
-                                                                     6,
+                                                                     11,
                                                                      75,
                                                                      20)] autorelease];
     timeLabel.textColor = [UIColor grayColor];
     timeLabel.textAlignment = NSTextAlignmentRight;
     timeLabel.text = [albunm.last_add_time getDynamicDateStringFromNow];//计算时间
-    timeLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:9.0f];
+    timeLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
     [sectionView addSubview:timeLabel];
     
     UIView *lineView = [[[UIView alloc] initWithFrame:CGRectMake(0, sectionView.frame.size.height-0.5f,
@@ -207,40 +191,5 @@
 {
     [self.mtableview reloadData];
 }
-
-//#pragma mark - UIScrollViewDelegate<NSObject>
-////用于控制navigation bar高度
-//- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-//{
-//    if(scrollView.frame.size.height >= scrollView.contentSize.height)
-//        return;
-//    
-//    CustomNavigationController *nav = (CustomNavigationController *)self.navigationController;
-//    
-//    if (scrollView.contentOffset.y <= -(self.navigationController.navigationBar.frame.size.height+self.navigationController.navigationBar.frame.origin.y)) {
-//        [nav changeNavigationBar2Normal];
-//    }else if(scrollView.contentOffset.y >= (self.navigationController.navigationBar.frame.size.height+self.navigationController.navigationBar.frame.origin.y+scrollView.contentSize.height-scrollView.frame.size.height)){
-//        [nav changeNavigationBar2Small];
-//    }else{
-//        
-//        CGFloat distance = lastScrollPoint.y - scrollView.contentOffset.y;
-//        NSInteger direction = distance > 0 ? 1 : -1;//大于0向上滚动
-//        
-//        if (abs(distance) > kReasonableDistance && direction != lastDirection) {
-//            if (direction>0) {//向上滚动
-//                CustomNavigationController *nav = (CustomNavigationController *)self.navigationController;
-//                [nav changeNavigationBar2Normal];
-//            }else{//向下滚动
-//                CustomNavigationController *nav = (CustomNavigationController *)self.navigationController;
-//                [nav changeNavigationBar2Small];
-//            }
-//            
-//            lastDirection = direction;
-//        }
-//    }
-//    
-//    lastScrollPoint = scrollView.contentOffset;
-//    
-//}
 
 @end
