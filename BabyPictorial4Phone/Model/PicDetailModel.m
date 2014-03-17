@@ -7,7 +7,7 @@
 //
 
 #import "PicDetailModel.h"
-
+#import "AlbunmModel.h"
 #import "NSDate+DynamicDateString.h"
 
 @implementation PicDetailModel
@@ -46,7 +46,12 @@
         self.customTag = [[dict objectForKey:@"custom_tag"] integerValue];
         
         //TODO:commentArray
-        //TODO:ownerAlbunm
+        
+        //ownerAlbunm
+        if ([dict objectForKey:@"ownerAlbunm"]!=nil) {
+            self.ownerAlbunm = [[[AlbunmModel alloc] initWithDictionary:[dict objectForKey:@"ownerAlbunm"]] autorelease];
+        }
+        
     }
     
     return self;
