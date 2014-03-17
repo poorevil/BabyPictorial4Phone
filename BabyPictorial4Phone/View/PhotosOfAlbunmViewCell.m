@@ -1,39 +1,33 @@
 //
-//  MainViewCell.m
+//  PhotosOfAlbunmViewCell.m
 //  BabyPictorial4Phone
 //
-//  Created by hanchao on 14-3-10.
+//  Created by hanchao on 14-3-17.
 //  Copyright (c) 2014年 hanchao. All rights reserved.
 //
 
-#import "MainViewCell.h"
+#import "PhotosOfAlbunmViewCell.h"
+
 #import "EGOImageView.h"
-#import "MainViewCellAlbunmOtherPhotosView.h"
 #import "MainViewCellAlbunmPhotoCommentsView.h"
 #import "PicDetailModel.h"
+#import "AlbunmModel.h"
 #import "CommentModel.h"
-#import "PhotosOfAlbunmViewController.h"
 
-#import "CustomTabBarController.h"
-#import "AppDelegate.h"
-#import "MainViewController.h"
-
-@interface MainViewCell() <EGOImageViewDelegate>
+@interface PhotosOfAlbunmViewCell() <EGOImageViewDelegate>
 
 @property (nonatomic,retain) EGOImageView *photoView;
-@property (nonatomic,retain) MainViewCellAlbunmOtherPhotosView *otherPhotosView;//图集其他图片view group
 @property (nonatomic,retain) MainViewCellAlbunmPhotoCommentsView *commentsView;//评论view group
 
 @end
 
-@implementation MainViewCell
+@implementation PhotosOfAlbunmViewCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:@"cell"];
     if (self) {
         // Initialization code
-        
     }
     return self;
 }
@@ -56,45 +50,22 @@
     [self.photoView setContentMode:UIViewContentModeScaleAspectFill];
     self.photoView.delegate = self;
     //TODO:默认图片
-    if (self.albunmModel.photoArray.count>0) {
+    if (self.picDetailModel.picUrl != nil) {
         self.photoView.imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@_640x640.jpg",
-                                                         [[self.albunmModel.photoArray objectAtIndex:0] picUrl]
-                                                        ]];
+                                                        self.picDetailModel.picUrl]];
     }
     [self addSubview:self.photoView];
     
     cellFrame.size.height = self.photoView.frame.size.height;
     
     /*
-     * 图集其他图片
-     */
-    [self.otherPhotosView removeFromSuperview];
-    self.otherPhotosView = [[[MainViewCellAlbunmOtherPhotosView alloc]
-                            initWithFrame:CGRectMake(0, cellFrame.size.height,
-                                                     self.bounds.size.width,80)] autorelease];// 320/5
-    self.otherPhotosView.photoArray = self.albunmModel.photoArray;
-    [self addSubview:self.otherPhotosView];
-    if (self.albunmModel.photoArray.count == 0) {
-        self.otherPhotosView.hidden = YES;
-    }else{
-        cellFrame.size.height = self.otherPhotosView.frame.size.height
-                                + self.otherPhotosView.frame.origin.y;
-    }
-    
-    //点击事件
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction:)];
-    [self.photoView addGestureRecognizer:tap];
-    [self.otherPhotosView addGestureRecognizer:tap];
-    [tap release];
-    
-    /*
      * 评论
      */
     [self.commentsView removeFromSuperview];
     self.commentsView = [[[MainViewCellAlbunmPhotoCommentsView alloc] initWithFrame:CGRectMake(0, cellFrame.size.height+4, self.bounds.size.width, 100)] autorelease];
-    self.commentsView.commentArray = self.albunmModel.commentArray;
+    self.commentsView.commentArray = self.picDetailModel.commentArray;
     [self addSubview:self.commentsView];
-    if (self.albunmModel.commentArray.count == 0) {
+    if (self.picDetailModel.commentArray.count == 0) {
         self.commentsView.hidden = YES;
     }else{
         cellFrame.size.height = self.commentsView.frame.size.height + self.commentsView.frame.origin.y;
@@ -103,12 +74,12 @@
     self.frame = cellFrame;
 }
 
--(void)setAlbunmModel:(AlbunmModel *)albunmModel
+-(void)setPicDetailModel:(PicDetailModel *)picDetailModel
 {
-    if (self.albunmModel != albunmModel) {
-        [_albunmModel release];
-        _albunmModel = nil;
-        _albunmModel = [albunmModel retain];
+    if (self.picDetailModel != picDetailModel) {
+        [_picDetailModel release];
+        _picDetailModel = nil;
+        _picDetailModel = [picDetailModel retain];
         
         [self initViews];
     }
@@ -125,9 +96,8 @@
 
 -(void)dealloc{
     self.delegate = nil;
-    self.albunmModel = nil;
+    self.picDetailModel = nil;
     self.photoView = nil;
-    self.otherPhotosView = nil;
     self.commentsView = nil;
     
     [super dealloc];
@@ -146,10 +116,6 @@
     //photoView frame
     photViewFrame.size.height -= diffY;
     self.photoView.frame = photViewFrame;
-    //otherPhotosView frame
-    CGRect otherPhotosViewFrame = self.otherPhotosView.frame;
-    otherPhotosViewFrame.origin.y -= diffY;
-    self.otherPhotosView.frame = otherPhotosViewFrame;
     //commentsView frame
     CGRect commentViewFrame = self.commentsView.frame;
     commentViewFrame.origin.y -= diffY;
@@ -159,23 +125,18 @@
     cellFrame.size.height -= diffY;
     self.frame = cellFrame;
     
-    [self.delegate needNotifyDatasetUpdate];
+    //    NSLog(@"------needNotifyDatasetUpdate--------");
+    
+    if ([self.delegate respondsToSelector:@selector(needNotifyDatasetUpdate)]) {
+        [self.delegate needNotifyDatasetUpdate];
+    }
+
 }
 
 - (void)imageViewFailedToLoadImage:(EGOImageView*)imageView error:(NSError*)error
 {
-    NSLog(@"MainViewCell  %@",[error localizedDescription]);
+    NSLog(@"PhotosOfAlbunmViewCell  %@",[error localizedDescription]);
 }
 
-#pragma mark - UITapGestureRecognizer action
--(void)tapAction:(UIGestureRecognizer *)sender
-{
-    PhotosOfAlbunmViewController *photoOfAlbunmVC = [[[PhotosOfAlbunmViewController alloc] init] autorelease];
-    photoOfAlbunmVC.albunmModel = self.albunmModel;
-    
-    AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
-    [appDelegate.tabBarController.mainViewController.navigationController pushViewController:photoOfAlbunmVC
-                                                                                    animated:YES];
-}
 
 @end

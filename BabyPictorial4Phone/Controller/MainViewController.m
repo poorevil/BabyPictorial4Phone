@@ -43,12 +43,19 @@
 {
     [super viewDidLoad];
 
+    //TODO:考虑挪到父类里面
+    CGFloat h = self.tabBarController.tabBar.frame.size.height;
+    CGRect windowFrame = [[UIScreen mainScreen] bounds];
+    self.view.frame = CGRectMake(0, 20,
+                                 windowFrame.size.width,
+                                 windowFrame.size.height-self.navigationController.navigationBar.frame.size.height-25);
+    
     self.title = @"名牌宝贝";
 //    [self.navigationController.navigationBar setTranslucent:NO];
 
-    self.mtableview = [[UITableView alloc] initWithFrame:CGRectMake(0,
+    self.mtableview = [[[UITableView alloc] initWithFrame:CGRectMake(0,
                                                                     0,
-                                                                    self.view.bounds.size.width, self.view.bounds.size.height)];
+                                                                    self.view.bounds.size.width, self.view.bounds.size.height)] autorelease];
     self.mtableview.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.mtableview.allowsSelection = NO;
     self.mtableview.delegate = self;
@@ -66,6 +73,20 @@
     
     [self getNextPage];
     
+}
+
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:YES ];
+    
+    CGFloat h = self.tabBarController.tabBar.frame.size.height;
+    CGRect windowFrame = [[UIScreen mainScreen] bounds];
+    self.mtableview.layer.frame = CGRectMake(0, 0,
+                                                 windowFrame.size.width,
+                                                 windowFrame.size.height-self.navigationController.navigationBar.frame.size.height-25);
+
+    
+
 }
 
 - (void)didReceiveMemoryWarning

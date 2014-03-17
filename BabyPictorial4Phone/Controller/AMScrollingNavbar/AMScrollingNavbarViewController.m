@@ -30,15 +30,15 @@
     
     CGFloat h = self.tabBarController.tabBar.frame.size.height;
     CGRect windowFrame = [[UIScreen mainScreen] bounds];
-    self.scrollableView.layer.frame = CGRectMake(0, 0,
-                                                 windowFrame.size.width,
-                                                 windowFrame.size.height-self.navigationController.navigationBar.frame.size.height-25-h);
+//    self.scrollableView.layer.frame = CGRectMake(0, 0,
+//                                                 windowFrame.size.width,
+//                                                 windowFrame.size.height-self.navigationController.navigationBar.frame.size.height-25-h);
     
     [self.overlay setAlpha:0];
     self.isExpanded = YES;
     self.isCollapsed = NO;
     
-//    [super viewWillDisappear:YES ];
+    [super viewWillDisappear:YES ];
 }
 
 -(void)viewDidLoad
@@ -47,12 +47,12 @@
     
     [self.navigationController.navigationBar setTranslucent:NO];
     
-    //TODO:考虑挪到父类里面
-    CGFloat h = self.tabBarController.tabBar.frame.size.height;
-    CGRect windowFrame = [[UIScreen mainScreen] bounds];
-    self.view.frame = CGRectMake(0, 0,
-                                 windowFrame.size.width,
-                                 windowFrame.size.height-self.navigationController.navigationBar.frame.size.height-25-h);
+//    //TODO:考虑挪到父类里面
+//    CGFloat h = self.tabBarController.tabBar.frame.size.height;
+//    CGRect windowFrame = [[UIScreen mainScreen] bounds];
+//    self.view.frame = CGRectMake(0, 0,
+//                                 windowFrame.size.width,
+//                                 windowFrame.size.height-self.navigationController.navigationBar.frame.size.height-25);
 }
 
 - (void)followScrollView:(UIView*)scrollableView

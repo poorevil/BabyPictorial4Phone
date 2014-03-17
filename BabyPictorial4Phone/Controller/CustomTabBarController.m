@@ -45,12 +45,12 @@
     CustomNavigationController *nav1 = [[[CustomNavigationController alloc]
                                    initWithRootViewController:self.mainViewController] autorelease];
     
-    self.hotViewController = [[[HotViewController alloc] initWithNibName:@"HotViewController" bundle:nil] autorelease];
+    self.hotViewController = [[[HotViewController alloc] init] autorelease];
     //创建导航
     CustomNavigationController *nav2 = [[[CustomNavigationController alloc]
                                     initWithRootViewController:self.hotViewController] autorelease];
     
-    self.meViewController = [[[MeViewController alloc] initWithNibName:@"MeViewController" bundle:nil] autorelease];
+    self.meViewController = [[[MeViewController alloc] init] autorelease];
     //创建导航
     CustomNavigationController *nav3 = [[[CustomNavigationController alloc]
                                      initWithRootViewController:self.meViewController] autorelease];
@@ -70,6 +70,13 @@
     
     self.selectedIndex = 0;
 
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    self.selectedIndex = 0;
 }
 
 - (void)hideRealTabBar{

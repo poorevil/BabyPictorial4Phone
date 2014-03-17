@@ -1,32 +1,37 @@
 //
-//  HotViewController.m
+//  PhotosOfAlbunmViewController.m
 //  BabyPictorial4Phone
 //
-//  Created by hanchao on 14-3-7.
+//  Created by hanchao on 14-3-17.
 //  Copyright (c) 2014年 hanchao. All rights reserved.
 //
 
-#import "HotViewController.h"
-#import "HotViewCell.h"
+#import "PhotosOfAlbunmViewController.h"
+#import "PhotosOfAlbunmViewCell.h"
 #import "NSDate+DynamicDateString.h"
 #import "AFHTTPRequestOperationManager.h"
-#import "HotInterfaceJSONSerializer.h"
+#import "PhotosOfAlbunmInterfaceJSONSerializer.h"
 #import "PicDetailModel.h"
 #import "AlbunmModel.h"
 
+#import "CustomTabBarController.h"
+#import "TabBarShareView.h"
+
 #define kSectionViewHeight      40
 
-@interface HotViewController () <UITableViewDataSource,UITableViewDelegate,HotViewCellDelegate>{
+@interface PhotosOfAlbunmViewController ()<UITableViewDataSource,UITableViewDelegate,PhotosOfAlbunmViewCellDelegate>{
     NSInteger currpage;
-    NSInteger totalCount;//图集总数
+    NSInteger totalCount;//图片总数
 }
 
 @property (nonatomic,retain) UITableView *mtableview;
 @property (nonatomic,retain) NSMutableArray *picDetailArray;
+@property (nonatomic,retain) CustomTabBarController *tabbar;
+@property (nonatomic,retain) TabBarShareView *tabBarView;
 
 @end
 
-@implementation HotViewController
+@implementation PhotosOfAlbunmViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -43,6 +48,17 @@
     [super viewDidLoad];
     
     self.title = @"名牌宝贝";
+    [self.navigationController.navigationBar setTranslucent:NO];
+    
+    //处理tab bar
+    self.tabbar = (CustomTabBarController *)self.tabBarController;
+    
+    NSArray *arr1 = [[NSBundle mainBundle] loadNibNamed:@"TabBarShareView" owner:self options:nil];
+    self.tabBarView = (TabBarShareView*)[arr1 objectAtIndex:0];
+    [self.tabBarView.backBtn addTarget:self action:@selector(backAction) forControlEvents:UIControlEventTouchUpInside];
+    [self.tabBarView.homeBtn addTarget:self action:@selector(homeAction) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.tabbar pushTabBar:self.tabBarView];
     
     //TODO:考虑挪到父类里面
     CGFloat h = self.tabBarController.tabBar.frame.size.height;
@@ -68,9 +84,13 @@
 	[self.navigationController.navigationBar setTintColor:[UIColor blackColor]];
 	
 	// Just call this line to enable the scrolling navbar
-	[self followScrollView:self.mtableview];
+//	[self followScrollView:self.mtableview];
     
     [self getNextPage];
+    
+//    CGRect navigationBarFrame = self.navigationController.navigationBar.frame;
+//    navigationBarFrame.origin.y = 20;
+//    self.navigationController.navigationBar.frame = navigationBarFrame;
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -80,9 +100,17 @@
     CGFloat h = self.tabBarController.tabBar.frame.size.height;
     CGRect windowFrame = [[UIScreen mainScreen] bounds];
     self.mtableview.layer.frame = CGRectMake(0, 0,
-                                                 windowFrame.size.width,
-                                                 windowFrame.size.height-self.navigationController.navigationBar.frame.size.height-25);
+                                             windowFrame.size.width,
+                                             windowFrame.size.height-self.navigationController.navigationBar.frame.size.height-25);
     
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    CGRect navigationBarFrame = self.navigationController.navigationBar.frame;
+    navigationBarFrame.origin.y = 20;
+    self.navigationController.navigationBar.frame = navigationBarFrame;
 }
 
 - (void)didReceiveMemoryWarning
@@ -96,6 +124,10 @@
     //    self.mscrollView = nil;
     self.mtableview = nil;
     self.picDetailArray = nil;
+    self.albunmModel = nil;
+    self.tabBarView = nil;
+    
+    self.tabbar = nil;
     
     [super dealloc];
 }
@@ -104,13 +136,13 @@
 //最新图片
 -(void)getNextPage
 {
-    //http://vps.taoxiaoxian.com/interface4phone/newestPicDetailList?currpage=1&appid=4
+    //http://vps.taoxiaoxian.com/interface4phone/picDetailList?currpage=1&albunmid=4
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     NSDictionary *parameters = @{@"currpage": [NSString stringWithFormat:@"%d",currpage],
-                                 @"appid":kAppId};
-    manager.responseSerializer = [HotInterfaceJSONSerializer serializer];
+                                 @"albunmid":self.albunmModel.aid};
+    manager.responseSerializer = [PhotosOfAlbunmInterfaceJSONSerializer serializer];
     
-    [manager GET:[NSString stringWithFormat:@"%@/interface4phone/newestPicDetailList",kBaseInterfaceDomain]
+    [manager GET:[NSString stringWithFormat:@"%@/interface4phone/picDetailList",kBaseInterfaceDomain]
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
              NSDictionary *resultDict = (NSDictionary *)responseObject;
@@ -132,26 +164,26 @@
 #pragma mark - UITableViewDataSource<NSObject>
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 1;
+    return self.picDetailArray.count;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return self.picDetailArray.count;
+    return 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    HotViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
+    PhotosOfAlbunmViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
     
     if (cell == nil) {
-        cell = [[[HotViewCell alloc] initWithFrame:CGRectMake(0, 0,
+        cell = [[[PhotosOfAlbunmViewCell alloc] initWithFrame:CGRectMake(0, 0,
                                                               self.view.bounds.size.width,
                                                               self.view.bounds.size.width)] autorelease];
         cell.delegate = self;
     }
     
-    cell.picDetailModel = [self.picDetailArray objectAtIndex:indexPath.section];
+    cell.picDetailModel = [self.picDetailArray objectAtIndex:indexPath.row];
     
     return cell;
 }
@@ -159,7 +191,7 @@
 #pragma mark - UITableViewDelegate<NSObject, UIScrollViewDelegate>
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    HotViewCell *cell = (HotViewCell *)[self tableView:tableView cellForRowAtIndexPath:indexPath];
+    PhotosOfAlbunmViewCell *cell = (PhotosOfAlbunmViewCell *)[self tableView:tableView cellForRowAtIndexPath:indexPath];
     return [cell cellSize].height;
 }
 
@@ -170,7 +202,7 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    PicDetailModel *picDetail = [self.picDetailArray objectAtIndex:section];
+//    PicDetailModel *picDetail = [self.picDetailArray objectAtIndex:section];
     
     UIView *sectionView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width,kSectionViewHeight)] autorelease];
     sectionView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.9f];
@@ -179,7 +211,7 @@
                                                                      self.view.bounds.size.width - 100,
                                                                      20)] autorelease];
     titleLabel.textColor = [UIColor blueColor];
-    titleLabel.text = picDetail.ownerAlbunm.albunm_name;
+    titleLabel.text = self.albunmModel.albunm_name;
     titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0f];
     [sectionView addSubview:titleLabel];
     
@@ -193,7 +225,7 @@
                                                                     20)] autorelease];
     timeLabel.textColor = [UIColor grayColor];
     timeLabel.textAlignment = NSTextAlignmentRight;
-    timeLabel.text = [picDetail.ownerAlbunm.last_add_time getDynamicDateStringFromNow];//计算时间
+    timeLabel.text = [self.albunmModel.last_add_time getDynamicDateStringFromNow];//计算时间
     timeLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
     [sectionView addSubview:timeLabel];
     
@@ -211,5 +243,27 @@
 {
     [self.mtableview reloadData];
 }
+
+#pragma mark - TabBar button action
+-(void)backAction{
+    [self.navigationController popViewControllerAnimated:YES];
+    
+    [self.tabbar popTabBar];//移除当前tabbar
+    
+}
+
+-(void)homeAction{
+    [self.navigationController popToRootViewControllerAnimated:YES];
+    
+    //    CustomTabBarController *mCustomTabBarController = (CustomTabBarController *)self.tabBarController;
+    //移除当前tabbar
+    [self.tabbar popToRootTabBar];//移除当前tabbar
+    
+}
+
+- (void)animationDidStop:(NSString *) animationID finished:(NSNumber *) finished context:(void *) context {
+	[self.tabBarView removeFromSuperview];
+}
+
 
 @end
