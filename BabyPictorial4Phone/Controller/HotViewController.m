@@ -73,6 +73,12 @@
     [self getNextPage];
 }
 
+- (void) viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:NO animated:animated];
+}
+
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:YES ];
@@ -82,7 +88,8 @@
     self.mtableview.layer.frame = CGRectMake(0, 0,
                                                  windowFrame.size.width,
                                                  windowFrame.size.height-self.navigationController.navigationBar.frame.size.height-25);
-    
+ 
+    [self.navigationController setNavigationBarHidden:YES animated:animated];
 }
 
 - (void)didReceiveMemoryWarning

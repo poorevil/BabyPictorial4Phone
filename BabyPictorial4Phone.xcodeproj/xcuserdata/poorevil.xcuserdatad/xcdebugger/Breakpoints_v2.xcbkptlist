@@ -84,12 +84,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BabyPictorial4Phone/View/MainViewCell.m"
-            timestampString = "416335396.90491"
+            timestampString = "416760111.342431"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "97"
-            endingLineNumber = "97"
-            landmarkName = "-setAlbunmModel:"
+            startingLineNumber = "102"
+            endingLineNumber = "102"
+            landmarkName = "-initViews"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -104,9 +104,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "28"
-            endingLineNumber = "28"
-            landmarkName = "-initWithStyle:reuseIdentifier:"
-            landmarkType = "5">
+            endingLineNumber = "28">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -116,11 +114,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BabyPictorial4Phone/Controller/AMScrollingNavbar/AMScrollingNavbarViewController.m"
-            timestampString = "416479542.747085"
+            timestampString = "416762215.66409"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "151"
-            endingLineNumber = "151"
+            startingLineNumber = "166"
+            endingLineNumber = "166"
             landmarkName = "-checkForPartialScroll"
             landmarkType = "5">
          </BreakpointContent>
@@ -132,11 +130,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BabyPictorial4Phone/Controller/AMScrollingNavbar/AMScrollingNavbarViewController.m"
-            timestampString = "416479542.747085"
+            timestampString = "416762215.66409"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "156"
-            endingLineNumber = "156"
+            startingLineNumber = "171"
+            endingLineNumber = "171"
             landmarkName = "-checkForPartialScroll"
             landmarkType = "5">
          </BreakpointContent>
@@ -148,11 +146,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BabyPictorial4Phone/Controller/AMScrollingNavbar/AMScrollingNavbarViewController.m"
-            timestampString = "416479542.747085"
+            timestampString = "416762215.66409"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "203"
-            endingLineNumber = "203"
+            startingLineNumber = "218"
+            endingLineNumber = "218"
             landmarkName = "-updateSizingWithDelta:"
             landmarkType = "5">
          </BreakpointContent>
@@ -164,11 +162,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BabyPictorial4Phone/Controller/AMScrollingNavbar/AMScrollingNavbarViewController.m"
-            timestampString = "416479542.747085"
+            timestampString = "416762215.66409"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "196"
-            endingLineNumber = "196"
+            startingLineNumber = "211"
+            endingLineNumber = "211"
             landmarkName = "-updateSizingWithDelta:"
             landmarkType = "5">
          </BreakpointContent>
@@ -180,11 +178,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BabyPictorial4Phone/Controller/AMScrollingNavbar/AMScrollingNavbarViewController.m"
-            timestampString = "416479542.747085"
+            timestampString = "416762215.66409"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "191"
-            endingLineNumber = "191"
+            startingLineNumber = "206"
+            endingLineNumber = "206"
             landmarkName = "-updateSizingWithDelta:"
             landmarkType = "5">
          </BreakpointContent>

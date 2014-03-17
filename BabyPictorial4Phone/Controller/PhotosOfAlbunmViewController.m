@@ -47,7 +47,7 @@
 {
     [super viewDidLoad];
     
-    self.title = @"名牌宝贝";
+    self.title = self.albunmModel.albunm_name;
     [self.navigationController.navigationBar setTranslucent:NO];
     
     //处理tab bar
@@ -84,13 +84,20 @@
 	[self.navigationController.navigationBar setTintColor:[UIColor blackColor]];
 	
 	// Just call this line to enable the scrolling navbar
-//	[self followScrollView:self.mtableview];
+	[self followScrollView:self.mtableview];
     
     [self getNextPage];
     
 //    CGRect navigationBarFrame = self.navigationController.navigationBar.frame;
 //    navigationBarFrame.origin.y = 20;
 //    self.navigationController.navigationBar.frame = navigationBarFrame;
+}
+
+- (void) viewWillAppear:(BOOL)animated
+{
+    
+    [self.navigationController setNavigationBarHidden:NO animated:animated];
+    
 }
 
 -(void)viewWillDisappear:(BOOL)animated
@@ -102,6 +109,8 @@
     self.mtableview.layer.frame = CGRectMake(0, 0,
                                              windowFrame.size.width,
                                              windowFrame.size.height-self.navigationController.navigationBar.frame.size.height-25);
+    
+    [self.navigationController setNavigationBarHidden:YES animated:animated];
     
 }
 
@@ -167,10 +176,10 @@
     return self.picDetailArray.count;
 }
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return 1;
-}
+//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+//{
+//    return 1;
+//}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
@@ -195,47 +204,47 @@
     return [cell cellSize].height;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    return kSectionViewHeight;
-}
+//- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+//{
+//    return kSectionViewHeight;
+//}
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-//    PicDetailModel *picDetail = [self.picDetailArray objectAtIndex:section];
-    
-    UIView *sectionView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width,kSectionViewHeight)] autorelease];
-    sectionView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.9f];
-    UILabel *titleLabel = [[[UILabel alloc] initWithFrame:CGRectMake(10,
-                                                                     9,
-                                                                     self.view.bounds.size.width - 100,
-                                                                     20)] autorelease];
-    titleLabel.textColor = [UIColor blueColor];
-    titleLabel.text = self.albunmModel.albunm_name;
-    titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0f];
-    [sectionView addSubview:titleLabel];
-    
-    UIImageView *clockImageView = [[[UIImageView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width - 95, 10, 5, 5)] autorelease];
-    //TODO:钟表形状图片
-    [sectionView addSubview:clockImageView];
-    
-    UILabel *timeLabel = [[[UILabel alloc] initWithFrame:CGRectMake(clockImageView.frame.size.width+clockImageView.frame.origin.x+5,
-                                                                    11,
-                                                                    75,
-                                                                    20)] autorelease];
-    timeLabel.textColor = [UIColor grayColor];
-    timeLabel.textAlignment = NSTextAlignmentRight;
-    timeLabel.text = [self.albunmModel.last_add_time getDynamicDateStringFromNow];//计算时间
-    timeLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
-    [sectionView addSubview:timeLabel];
-    
-    UIView *lineView = [[[UIView alloc] initWithFrame:CGRectMake(0, sectionView.frame.size.height-0.5f,
-                                                                 sectionView.frame.size.width,0.5f)] autorelease];
-    lineView.backgroundColor = [UIColor lightGrayColor];
-    [sectionView addSubview:lineView];
-    
-    return sectionView;
-}
+//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+//{
+////    PicDetailModel *picDetail = [self.picDetailArray objectAtIndex:section];
+//    
+//    UIView *sectionView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width,kSectionViewHeight)] autorelease];
+//    sectionView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.9f];
+//    UILabel *titleLabel = [[[UILabel alloc] initWithFrame:CGRectMake(10,
+//                                                                     9,
+//                                                                     self.view.bounds.size.width - 100,
+//                                                                     20)] autorelease];
+//    titleLabel.textColor = [UIColor blueColor];
+//    titleLabel.text = self.albunmModel.albunm_name;
+//    titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16.0f];
+//    [sectionView addSubview:titleLabel];
+//    
+//    UIImageView *clockImageView = [[[UIImageView alloc] initWithFrame:CGRectMake(self.view.bounds.size.width - 95, 10, 5, 5)] autorelease];
+//    //TODO:钟表形状图片
+//    [sectionView addSubview:clockImageView];
+//    
+//    UILabel *timeLabel = [[[UILabel alloc] initWithFrame:CGRectMake(clockImageView.frame.size.width+clockImageView.frame.origin.x+5,
+//                                                                    11,
+//                                                                    75,
+//                                                                    20)] autorelease];
+//    timeLabel.textColor = [UIColor grayColor];
+//    timeLabel.textAlignment = NSTextAlignmentRight;
+//    timeLabel.text = [self.albunmModel.last_add_time getDynamicDateStringFromNow];//计算时间
+//    timeLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
+//    [sectionView addSubview:timeLabel];
+//    
+//    UIView *lineView = [[[UIView alloc] initWithFrame:CGRectMake(0, sectionView.frame.size.height-0.5f,
+//                                                                 sectionView.frame.size.width,0.5f)] autorelease];
+//    lineView.backgroundColor = [UIColor lightGrayColor];
+//    [sectionView addSubview:lineView];
+//    
+//    return sectionView;
+//}
 
 #pragma mark - HotViewCellDelegate
 

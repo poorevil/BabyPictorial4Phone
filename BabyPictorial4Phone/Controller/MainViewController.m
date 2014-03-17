@@ -48,7 +48,7 @@
     CGRect windowFrame = [[UIScreen mainScreen] bounds];
     self.view.frame = CGRectMake(0, 20,
                                  windowFrame.size.width,
-                                 windowFrame.size.height-self.navigationController.navigationBar.frame.size.height-25);
+                                 windowFrame.size.height-self.navigationController.navigationBar.frame.size.height-25-h);
     
     self.title = @"名牌宝贝";
 //    [self.navigationController.navigationBar setTranslucent:NO];
@@ -75,6 +75,12 @@
     
 }
 
+- (void) viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:NO animated:animated];
+}
+
 -(void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:YES ];
@@ -83,9 +89,10 @@
     CGRect windowFrame = [[UIScreen mainScreen] bounds];
     self.mtableview.layer.frame = CGRectMake(0, 0,
                                                  windowFrame.size.width,
-                                                 windowFrame.size.height-self.navigationController.navigationBar.frame.size.height-25);
+                                                 windowFrame.size.height-self.navigationController.navigationBar.frame.size.height-25-h);
 
-    
+    [self.navigationController setNavigationBarHidden:YES animated:animated];
+
 
 }
 

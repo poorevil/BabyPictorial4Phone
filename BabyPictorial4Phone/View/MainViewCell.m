@@ -52,6 +52,7 @@
     
     [self.photoView removeFromSuperview];
     self.photoView = [[[EGOImageView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.width)] autorelease];
+    self.photoView.userInteractionEnabled = YES;
     self.photoView.clipsToBounds = YES;
     [self.photoView setContentMode:UIViewContentModeScaleAspectFill];
     self.photoView.delegate = self;
@@ -62,6 +63,10 @@
                                                         ]];
     }
     [self addSubview:self.photoView];
+    //点击事件
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction:)];
+    [self.photoView addGestureRecognizer:tap];
+    [tap release];
     
     cellFrame.size.height = self.photoView.frame.size.height;
     
@@ -82,7 +87,7 @@
     }
     
     //点击事件
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction:)];
+    tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction:)];
     [self.photoView addGestureRecognizer:tap];
     [self.otherPhotosView addGestureRecognizer:tap];
     [tap release];

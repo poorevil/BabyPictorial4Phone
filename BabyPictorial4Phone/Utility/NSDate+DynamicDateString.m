@@ -11,8 +11,12 @@
 @implementation NSDate (DynamicDateString)
 
 -(NSString *)getDynamicDateStringFromNow{
+
+    
     NSTimeInterval distanceFromNow = [self timeIntervalSinceNow];
     distanceFromNow = abs(distanceFromNow);
+    
+    distanceFromNow -= 60*60*8;
     
     NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];     
     

@@ -12,7 +12,7 @@
 
 @class AlbunmModel;
 
-@interface PhotosOfAlbunmViewController : UIViewController//AMScrollingNavbarViewController
+@interface PhotosOfAlbunmViewController : AMScrollingNavbarViewController
 
 @property (nonatomic,retain) AlbunmModel *albunmModel;
 

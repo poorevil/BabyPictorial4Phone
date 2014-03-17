@@ -41,6 +41,15 @@
     [super viewWillDisappear:YES ];
 }
 
+
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self.overlay setAlpha:0];
+    [self.navigationController.navigationBar bringSubviewToFront:self.overlay];
+}
+
 -(void)viewDidLoad
 {
     [super viewDidLoad];
@@ -65,18 +74,24 @@
 	[self.panGesture setDelegate:self];
 	[self.scrollableView addGestureRecognizer:self.panGesture];
 
-	/* The navbar fadeout is achieved using an overlay view with the same barTintColor.
-	 this might be improved by adjusting the alpha component of every navbar child */
-	CGRect frame = self.navigationController.navigationBar.frame;
-	frame.origin = CGPointZero;
-	self.overlay = [[UIView alloc] initWithFrame:frame];
-	if (!self.navigationController.navigationBar.barTintColor) {
-		NSLog(@"[%s]: %@", __func__, @"Warning: no bar tint color set");
-	}
-	[self.overlay setBackgroundColor:self.navigationController.navigationBar.barTintColor];
-	[self.overlay setUserInteractionEnabled:NO];
-	[self.navigationController.navigationBar addSubview:self.overlay];
-	[self.overlay setAlpha:0];
+    if ([self.navigationController.navigationBar viewWithTag:999]==nil) {
+        /* The navbar fadeout is achieved using an overlay view with the same barTintColor.
+         this might be improved by adjusting the alpha component of every navbar child */
+        CGRect frame = self.navigationController.navigationBar.frame;
+        frame.origin = CGPointZero;
+        self.overlay = [[UIView alloc] initWithFrame:frame];
+        self.overlay.tag = 999;
+        if (!self.navigationController.navigationBar.barTintColor) {
+            NSLog(@"[%s]: %@", __func__, @"Warning: no bar tint color set");
+        }
+        [self.overlay setBackgroundColor:self.navigationController.navigationBar.barTintColor];
+        [self.overlay setUserInteractionEnabled:NO];
+        [self.navigationController.navigationBar addSubview:self.overlay];
+    }else{
+        self.overlay = [self.navigationController.navigationBar viewWithTag:999];
+    }
+    
+    [self.overlay setAlpha:0];
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
