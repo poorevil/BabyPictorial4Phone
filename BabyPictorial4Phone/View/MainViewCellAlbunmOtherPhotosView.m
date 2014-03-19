@@ -77,6 +77,13 @@
     }
 }
 
+-(void)cancelAllImageLoadThread
+{
+    for (EGOImageView *egoImageView in self.photoImageViewArray) {
+        [egoImageView cancelImageLoad];
+    }
+}
+
 -(void)setPhotoArray:(NSMutableArray *)photoArray
 {
     if (self.photoArray != photoArray) {
@@ -93,6 +100,7 @@
     self.photoArray = nil;
     self.photoImageViewArray = nil;
     
+    NSLog(@"==dealloc======");
     [super dealloc];
 }
 

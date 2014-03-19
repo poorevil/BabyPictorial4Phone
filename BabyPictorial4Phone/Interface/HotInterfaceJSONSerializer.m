@@ -53,8 +53,8 @@
     
     NSMutableDictionary *resultDict = [NSMutableDictionary dictionary];//返回结果
     
-    [resultDict setObject:[[jsonDict objectForKey:@"result_code"] copy] forKey:@"result_code"];
-    [resultDict setObject:[[jsonDict objectForKey:@"total_count"] copy] forKey:@"total_count"];
+    [resultDict setObject:[[[jsonDict objectForKey:@"result_code"] copy] autorelease] forKey:@"result_code"];
+    [resultDict setObject:[[[jsonDict objectForKey:@"total_count"] copy] autorelease] forKey:@"total_count"];
     
     NSMutableArray * picDetailArray = [NSMutableArray array];
     NSInteger result_code = [[jsonDict objectForKey:@"result_code"] integerValue];

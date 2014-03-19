@@ -13,16 +13,23 @@
 #import "AFHTTPRequestOperationManager.h"
 #import "MainInterfaceJSONSerializer.h"
 
+#import "EGORefreshTableHeaderView.h"
 
 #define kSectionViewHeight      40
 
-@interface MainViewController () <UITableViewDataSource,UITableViewDelegate,MainViewCellDelegate>{
+@interface MainViewController () <UITableViewDataSource,UITableViewDelegate,UIScrollViewDelegate,MainViewCellDelegate,
+EGORefreshTableHeaderDelegate>{
     NSInteger currpage;
     NSInteger totalCount;//图集总数
+    
+    BOOL _reloading;
+    BOOL _isGettingNextPage;
 }
 
 @property (nonatomic,retain) UITableView *mtableview;
 @property (nonatomic,retain) NSMutableArray *albunmArray;
+
+@property (nonatomic,retain) EGORefreshTableHeaderView *refreshHeaderView;
 
 @end
 
@@ -73,6 +80,24 @@
     
     [self getNextPage];
     
+    //下拉刷新
+    if (self.refreshHeaderView == nil) {
+		
+		EGORefreshTableHeaderView *view = [[EGORefreshTableHeaderView alloc]
+                                           initWithFrame:CGRectMake(0.0f,
+                                                                    0.0f - self.mtableview.bounds.size.height,
+                                                                    self.view.frame.size.width,
+                                                                    self.mtableview.bounds.size.height)];
+		view.delegate = self;
+		[self.mtableview addSubview:view];
+		self.refreshHeaderView = view;
+		[view release];
+		
+	}
+    
+    //  update the last update date
+	[self.refreshHeaderView refreshLastUpdatedDate];
+    
 }
 
 - (void) viewWillAppear:(BOOL)animated
@@ -102,11 +127,22 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
+    // e.g. self.myOutlet = nil;
+    
+    self.refreshHeaderView=nil;
+}
+
 -(void)dealloc
 {
 //    self.mscrollView = nil;
     self.mtableview = nil;
     self.albunmArray = nil;
+    
+    self.refreshHeaderView = nil;
     
     [super dealloc];
 }
@@ -120,6 +156,8 @@
                                  @"appid":kAppId};
     manager.responseSerializer = [MainInterfaceJSONSerializer serializer];
     
+    _isGettingNextPage = YES;
+    
     [manager GET:[NSString stringWithFormat:@"%@/interface4phone/albunmlistForMainView",kBaseInterfaceDomain]
       parameters:parameters
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -128,14 +166,21 @@
              if ([[resultDict objectForKey:@"result_code"] integerValue] == 200 ) {
                  totalCount = [[resultDict objectForKey:@"total_count"] integerValue];
                  
+                 if (currpage==1) {
+                     self.albunmArray = [NSMutableArray array];
+                 }
+                 
                  [self.albunmArray addObjectsFromArray:[NSArray arrayWithArray:[resultDict objectForKey:@"albunm_items"]]];
                  currpage++;
                  
                  [self.mtableview reloadData];
              }
              
+             _isGettingNextPage = NO;
+             
          } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
              NSLog(@"request interface interface4phone/albunmlistForMainView did failed : %@",[error localizedDescription]);
+             _isGettingNextPage = NO;
          }];
 }
 
@@ -161,10 +206,15 @@
     
     cell.albunmModel = [self.albunmArray objectAtIndex:indexPath.section];
     
+    //获取下一页
+    if (indexPath.section == self.albunmArray.count - 1 && totalCount > self.albunmArray.count && !_isGettingNextPage ) {
+        [self getNextPage];
+    }
+    
     return cell;
 }
 
-#pragma mark - UITableViewDelegate<NSObject, UIScrollViewDelegate>
+#pragma mark - UITableViewDelegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     MainViewCell *cell = (MainViewCell *)[self tableView:tableView cellForRowAtIndexPath:indexPath];
@@ -217,7 +267,58 @@
 
 -(void)needNotifyDatasetUpdate
 {
+    NSLog(@"=======needNotifyDatasetUpdate==========");
     [self.mtableview reloadData];
+}
+
+#pragma mark -
+#pragma mark UIScrollViewDelegate Methods
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+	[self.refreshHeaderView egoRefreshScrollViewDidScroll:scrollView];
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+	[self.refreshHeaderView egoRefreshScrollViewDidEndDragging:scrollView];
+}
+
+#pragma mark -
+#pragma mark Data Source Loading / Reloading Methods
+//下拉刷新---清空并重新加载所有数据
+- (void)reloadTableViewDataSource{
+	
+    _reloading = YES;
+    
+    currpage = 1;
+    [self getNextPage];
+}
+
+//刷新完成后通知下拉刷新view
+- (void)doneLoadingTableViewData{
+	
+    _reloading = NO;
+	[self.refreshHeaderView egoRefreshScrollViewDataSourceDidFinishedLoading:self.mtableview];
+	
+}
+
+#pragma mark -
+#pragma mark EGORefreshTableHeaderDelegate Methods
+- (void)egoRefreshTableHeaderDidTriggerRefresh:(EGORefreshTableHeaderView*)view{
+	
+	[self reloadTableViewDataSource];
+	[self performSelector:@selector(doneLoadingTableViewData) withObject:nil afterDelay:3.0];
+	
+}
+
+- (BOOL)egoRefreshTableHeaderDataSourceIsLoading:(EGORefreshTableHeaderView*)view{
+	
+	return _reloading; // should return if data source model is reloading
+	
+}
+
+- (NSDate*)egoRefreshTableHeaderDataSourceLastUpdated:(EGORefreshTableHeaderView*)view{
+	
+	return [NSDate date]; // should return date data source was last changed
+	
 }
 
 @end

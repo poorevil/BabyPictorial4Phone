@@ -12,4 +12,6 @@
 
 @property (nonatomic,retain) NSMutableArray *photoArray;
 
+-(void)cancelAllImageLoadThread;
+
 @end

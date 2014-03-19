@@ -58,21 +58,30 @@
 {
     //cell frame
     CGRect cellFrame = self.frame;
+
+    if (!self.photoView) {
+        self.photoView = [[[EGOImageView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.width)] autorelease];
+        self.photoView.userInteractionEnabled = YES;
+        self.photoView.clipsToBounds = YES;
+        [self.photoView setContentMode:UIViewContentModeScaleAspectFill];
+        self.photoView.delegate = self;
+        
+        [self addSubview:self.photoView];
+    }
+    [self.photoView cancelImageLoad];
+//    [self.photoView removeFromSuperview];
     
-    [self.photoView removeFromSuperview];
-    self.photoView = [[[EGOImageView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.width)] autorelease];
-    self.photoView.userInteractionEnabled = YES;
-    self.photoView.clipsToBounds = YES;
-    [self.photoView setContentMode:UIViewContentModeScaleAspectFill];
-    self.photoView.delegate = self;
     //TODO:默认图片
     if (self.albunmModel.photoArray.count>0) {
         self.photoView.imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@_640x640.jpg",
                                                          [[self.albunmModel.photoArray objectAtIndex:0] picUrl]
                                                         ]];
     }
-    [self addSubview:self.photoView];
+    
     //点击事件
+    for (UIGestureRecognizer *gesture in [self.photoView gestureRecognizers]) {
+        [self.photoView removeGestureRecognizer:gesture];
+    }
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction:)];
     [self.photoView addGestureRecognizer:tap];
     [tap release];
@@ -80,27 +89,45 @@
     cellFrame.size.height = self.photoView.frame.size.height;
     
     //图片数量
-    [self.picAmountView removeFromSuperview];
-    self.picAmountView = [[UIView alloc] initWithFrame:CGRectMake(self.bounds.size.width - 10 - 50,
-                                                                     self.photoView.frame.size.height - 5 - 25,
-                                                                     50, 25)];
-    self.picAmountView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3];
-//    self.picAmountView.layer.borderColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.15].CGColor;
-//    self.picAmountView.layer.borderWidth = 0.5f;
-    self.picAmountView.layer.cornerRadius = 2;
-    UILabel *picAmountLabel = [[[UILabel alloc] initWithFrame:CGRectMake(0, 0,
-                                                                         self.picAmountView.frame.size.width,
-                                                                         self.picAmountView.frame.size.height)] autorelease];
-    picAmountLabel.text = [NSString stringWithFormat:@"%d pics",self.albunmModel.pic_amount];
-    picAmountLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13.0f];
-    picAmountLabel.textAlignment = NSTextAlignmentCenter;
-    picAmountLabel.textColor = [UIColor whiteColor];
-    [self.picAmountView addSubview:picAmountLabel];
-    [self addSubview:self.picAmountView];
-    
+    UILabel *picAmountLabel = nil;
+    if (!self.picAmountView) {
+        self.picAmountView = [[[UIView alloc] initWithFrame:CGRectMake(self.bounds.size.width - 10 - 50,
+                                                                       self.photoView.frame.size.height - 5 - 25,
+                                                                       50, 25)] autorelease];
+        self.picAmountView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3];
+        self.picAmountView.layer.cornerRadius = 2;
+        picAmountLabel = [[[UILabel alloc] initWithFrame:CGRectMake(0, 0,
+                                                                             self.picAmountView.frame.size.width,
+                                                                             self.picAmountView.frame.size.height)] autorelease];
+        picAmountLabel.tag = 999;
+        picAmountLabel.text = [NSString stringWithFormat:@"%d pics",self.albunmModel.pic_amount];
+        picAmountLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13.0f];
+        picAmountLabel.textAlignment = NSTextAlignmentCenter;
+        picAmountLabel.textColor = [UIColor whiteColor];
+        
+        [self.picAmountView addSubview:picAmountLabel];
+        [self addSubview:self.picAmountView];
+    }else{
+        picAmountLabel = (UILabel *)[self.picAmountView viewWithTag:999];
+    }
+//    [self.picAmountView removeFromSuperview];
+   
+    //计算评论内容的size
+    NSDictionary *picAmountAttribute = @{NSFontAttributeName: picAmountLabel.font};
+    CGRect labelFontRect = [picAmountLabel.text
+                            boundingRectWithSize:CGSizeMake(100,picAmountLabel.frame.size.height)
+                            options:NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesFontLeading
+                            attributes:picAmountAttribute
+                            context:nil];
+    picAmountLabel.frame = CGRectMake(0, 0, labelFontRect.size.width+10, picAmountLabel.frame.size.height);
+    self.picAmountView.frame = CGRectMake(self.bounds.size.width - 10 - picAmountLabel.frame.size.width,
+                                               self.picAmountView.frame.origin.y,
+                                               picAmountLabel.frame.size.width,
+                                               self.picAmountView.frame.size.height);
     /*
      * 图集其他图片
      */
+    [self.otherPhotosView cancelAllImageLoadThread];
     [self.otherPhotosView removeFromSuperview];
     self.otherPhotosView = [[[MainViewCellAlbunmOtherPhotosView alloc]
                             initWithFrame:CGRectMake(0, cellFrame.size.height,
@@ -116,8 +143,8 @@
     
     //图片描述
     [self.descTitleViewGroup removeFromSuperview];
-    self.descTitleViewGroup = [[UIView alloc] initWithFrame:CGRectMake(0, cellFrame.size.height+8,
-                                                                       self.bounds.size.width, 40)];
+    self.descTitleViewGroup = [[[UIView alloc] initWithFrame:CGRectMake(0, cellFrame.size.height+8,
+                                                                       self.bounds.size.width, 40)] autorelease];
     [self addSubview:self.descTitleViewGroup];
     if (self.albunmModel.photoArray.count == 0) {
         self.descTitleViewGroup.hidden = YES;
@@ -131,6 +158,21 @@
         descTitleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:13.0f];
         descTitleLabel.textColor = [UIColor grayColor];
         descTitleLabel.numberOfLines = 2;
+        
+        //计算评论内容的size
+        NSDictionary *attribute = @{NSFontAttributeName: descTitleLabel.font};
+        CGRect labelFontRect = [descTitleLabel.text
+                                boundingRectWithSize:CGSizeMake(descTitleLabel.frame.size.width , 100)
+                                options:NSStringDrawingTruncatesLastVisibleLine | NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading
+                                attributes:attribute
+                                context:nil];
+
+        descTitleLabel.frame = CGRectMake(10, 0, labelFontRect.size.width, labelFontRect.size.height);
+        self.descTitleViewGroup.frame = CGRectMake(self.descTitleViewGroup.frame.origin.x,
+                                                   self.descTitleViewGroup.frame.origin.y,
+                                                   self.descTitleViewGroup.frame.size.width,
+                                                   descTitleLabel.frame.size.height);
+        
         [self.descTitleViewGroup addSubview:descTitleLabel];
         
         cellFrame.size.height = self.descTitleViewGroup.frame.size.height
@@ -139,7 +181,6 @@
     
     //点击事件
     tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction:)];
-    [self.photoView addGestureRecognizer:tap];
     [self.otherPhotosView addGestureRecognizer:tap];
     [tap release];
     
@@ -156,52 +197,54 @@
         cellFrame.size.height = self.commentsView.frame.size.height + self.commentsView.frame.origin.y;
     }
     
-    //收藏
-    [self.favoriteBtn removeFromSuperview];
-    self.favoriteBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.favoriteBtn.frame = CGRectMake(10, cellFrame.size.height + 10,50, 25);
-    //TODO:用图片做背景，普通、点击，两套
-    self.favoriteBtn.backgroundColor = [UIColor lightGrayColor];
-    [self.favoriteBtn setAdjustsImageWhenHighlighted:NO];
-    [self.favoriteBtn setTitle:@"收藏" forState:UIControlStateNormal];
-    [self.favoriteBtn.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f]];
-    self.favoriteBtn.layer.cornerRadius = 4;
-    [self.favoriteBtn addTarget:self
-                         action:@selector(favoriteBtnAction:)
-               forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:self.favoriteBtn];
-    //分享
-    [self.shareBtn removeFromSuperview];
-    self.shareBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.shareBtn.frame = CGRectMake(self.favoriteBtn.frame.size.width + self.favoriteBtn.frame.origin.x +16,
-                                     cellFrame.size.height + 10,50, 25);
-    //TODO:用图片做背景，普通、点击，两套
-    self.shareBtn.backgroundColor = [UIColor lightGrayColor];
-    [self.shareBtn setAdjustsImageWhenHighlighted:NO];
-    [self.shareBtn setTitle:@"分享" forState:UIControlStateNormal];
-    [self.shareBtn.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f]];
-    self.shareBtn.layer.cornerRadius = 4;
-    [self.shareBtn addTarget:self
-                         action:@selector(shareBtnAction:)
-               forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:self.shareBtn];
-    //其他btn
-    [self.otherBtn removeFromSuperview];
-    self.otherBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.otherBtn.frame = CGRectMake(self.bounds.size.width - 10 - 50,
-                                     cellFrame.size.height + 10,50, 25);
-    //TODO:用图片做背景，普通、点击，两套
-    self.otherBtn.backgroundColor = [UIColor lightGrayColor];
-    [self.otherBtn setAdjustsImageWhenHighlighted:YES];
-    [self.otherBtn setTitle:@"..." forState:UIControlStateNormal];
-    [self.otherBtn.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f]];
-    self.otherBtn.layer.cornerRadius = 4;
-    [self.otherBtn addTarget:self
-                         action:@selector(otherBtnAction:)
-               forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:self.otherBtn];
-    
-    cellFrame.size.height = self.shareBtn.frame.size.height + self.shareBtn.frame.origin.y +24;
+    if (!self.favoriteBtn) {
+        //收藏
+        [self.favoriteBtn removeFromSuperview];
+        self.favoriteBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        self.favoriteBtn.frame = CGRectMake(10, cellFrame.size.height + 10,50, 25);
+        //TODO:用图片做背景，普通、点击，两套
+        self.favoriteBtn.backgroundColor = [UIColor lightGrayColor];
+        [self.favoriteBtn setAdjustsImageWhenHighlighted:NO];
+        [self.favoriteBtn setTitle:@"收藏" forState:UIControlStateNormal];
+        [self.favoriteBtn.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f]];
+        self.favoriteBtn.layer.cornerRadius = 4;
+        [self.favoriteBtn addTarget:self
+                             action:@selector(favoriteBtnAction:)
+                   forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:self.favoriteBtn];
+        //分享
+        [self.shareBtn removeFromSuperview];
+        self.shareBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        self.shareBtn.frame = CGRectMake(self.favoriteBtn.frame.size.width + self.favoriteBtn.frame.origin.x +16,
+                                         cellFrame.size.height + 10,50, 25);
+        //TODO:用图片做背景，普通、点击，两套
+        self.shareBtn.backgroundColor = [UIColor lightGrayColor];
+        [self.shareBtn setAdjustsImageWhenHighlighted:NO];
+        [self.shareBtn setTitle:@"分享" forState:UIControlStateNormal];
+        [self.shareBtn.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f]];
+        self.shareBtn.layer.cornerRadius = 4;
+        [self.shareBtn addTarget:self
+                             action:@selector(shareBtnAction:)
+                   forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:self.shareBtn];
+        //其他btn
+        [self.otherBtn removeFromSuperview];
+        self.otherBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        self.otherBtn.frame = CGRectMake(self.bounds.size.width - 10 - 50,
+                                         cellFrame.size.height + 10,50, 25);
+        //TODO:用图片做背景，普通、点击，两套
+        self.otherBtn.backgroundColor = [UIColor lightGrayColor];
+        [self.otherBtn setAdjustsImageWhenHighlighted:YES];
+        [self.otherBtn setTitle:@"..." forState:UIControlStateNormal];
+        [self.otherBtn.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:14.0f]];
+        self.otherBtn.layer.cornerRadius = 4;
+        [self.otherBtn addTarget:self
+                             action:@selector(otherBtnAction:)
+                   forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:self.otherBtn];
+        
+        cellFrame.size.height = self.shareBtn.frame.size.height + self.shareBtn.frame.origin.y +24;
+    }
     
     self.frame = cellFrame;
 }
@@ -244,49 +287,52 @@
 #pragma mark - EGOImageViewDelegate
 - (void)imageViewLoadedImage:(EGOImageView*)imageView{
     
-    /*
-     * 重新计算自身高度
-     */
-    CGSize imageSize = self.photoView.image.size;
-    CGRect photViewFrame = self.photoView.frame;
-    CGFloat diffY = photViewFrame.size.width/imageSize.width*imageSize.height - photViewFrame.size.height;//图片高度差值
-    
-    //photoView frame
-    photViewFrame.size.height -= diffY;
-    self.photoView.frame = photViewFrame;
-    //picAmountView
-    CGRect picAmountViewFrame = self.picAmountView.frame;
-    picAmountViewFrame.origin.y -= diffY;
-    self.picAmountView.frame = picAmountViewFrame;
-    //otherPhotosView frame
-    CGRect otherPhotosViewFrame = self.otherPhotosView.frame;
-    otherPhotosViewFrame.origin.y -= diffY;
-    self.otherPhotosView.frame = otherPhotosViewFrame;
-    //图片描述
-    CGRect descTitleViewGroupFrame = self.descTitleViewGroup.frame;
-    descTitleViewGroupFrame.origin.y -= diffY;
-    self.descTitleViewGroup.frame = descTitleViewGroupFrame;
-    //commentsView frame
-    CGRect commentViewFrame = self.commentsView.frame;
-    commentViewFrame.origin.y -= diffY;
-    self.commentsView.frame = commentViewFrame;
-    //按钮
-    CGRect fbtnFrame = self.favoriteBtn.frame;
-    fbtnFrame.origin.y -= diffY;
-    self.favoriteBtn.frame = fbtnFrame;
-    CGRect sbtnFrame = self.shareBtn.frame;
-    sbtnFrame.origin.y -= diffY;
-    self.shareBtn.frame = sbtnFrame;
-    CGRect obtnFrame = self.otherBtn.frame;
-    obtnFrame.origin.y -= diffY;
-    self.otherBtn.frame = obtnFrame;
-    
-    //cell frame
-    CGRect cellFrame = self.frame;
-    cellFrame.size.height -= diffY;
-    self.frame = cellFrame;
-    
-    [self.delegate needNotifyDatasetUpdate];
+//    /*
+//     * 重新计算自身高度
+//     */
+//    CGSize imageSize = self.photoView.image.size;
+//    if (imageSize.width >0 &&imageSize.height>0) {
+//
+//        CGRect photViewFrame = self.photoView.frame;
+//        CGFloat diffY = photViewFrame.size.width/imageSize.width*imageSize.height - photViewFrame.size.height;//图片高度差值
+//        
+//        //photoView frame
+//        photViewFrame.size.height -= diffY;
+//        self.photoView.frame = photViewFrame;
+//        //picAmountView
+//        CGRect picAmountViewFrame = self.picAmountView.frame;
+//        picAmountViewFrame.origin.y -= diffY;
+//        self.picAmountView.frame = picAmountViewFrame;
+//        //otherPhotosView frame
+//        CGRect otherPhotosViewFrame = self.otherPhotosView.frame;
+//        otherPhotosViewFrame.origin.y -= diffY;
+//        self.otherPhotosView.frame = otherPhotosViewFrame;
+//        //图片描述
+//        CGRect descTitleViewGroupFrame = self.descTitleViewGroup.frame;
+//        descTitleViewGroupFrame.origin.y -= diffY;
+//        self.descTitleViewGroup.frame = descTitleViewGroupFrame;
+//        //commentsView frame
+//        CGRect commentViewFrame = self.commentsView.frame;
+//        commentViewFrame.origin.y -= diffY;
+//        self.commentsView.frame = commentViewFrame;
+//        //按钮
+//        CGRect fbtnFrame = self.favoriteBtn.frame;
+//        fbtnFrame.origin.y -= diffY;
+//        self.favoriteBtn.frame = fbtnFrame;
+//        CGRect sbtnFrame = self.shareBtn.frame;
+//        sbtnFrame.origin.y -= diffY;
+//        self.shareBtn.frame = sbtnFrame;
+//        CGRect obtnFrame = self.otherBtn.frame;
+//        obtnFrame.origin.y -= diffY;
+//        self.otherBtn.frame = obtnFrame;
+//        
+//        //cell frame
+//        CGRect cellFrame = self.frame;
+//        cellFrame.size.height -= diffY;
+//        self.frame = cellFrame;
+//        
+//        [self.delegate needNotifyDatasetUpdate];
+//    }
 }
 
 - (void)imageViewFailedToLoadImage:(EGOImageView*)imageView error:(NSError*)error
